@@ -13,7 +13,7 @@ import {a} from '@react-spring/three'
 
 import islandScene from '../assets/3d/island.glb';
 
-const Island = (isRotating, setIsRotating, ...props) =>{
+const Island = ({isRotating, setIsRotating, ...props}) =>{
     const islandRef = useRef();
 
   const {gl, viewport} = useThree();
@@ -26,20 +26,82 @@ const Island = (isRotating, setIsRotating, ...props) =>{
     e.stopPropagation();
     e.preventDefault();
     setIsRotating(true);
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+    lastX.current = clientX;
   }
 
   const handlePointerUp = (e) => {
     e.stopPropagation();
     e.preventDefault();
     setIsRotating(false);
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const delta = (clientX - lastX.current)/ viewport.width;
+
+    islandRef.current.rotation.y += delta * 0.01 * Math.PI;
+    lastX.current = clientX;
+    rotationSpeed.current = delta * 0.01 * Math.PI; 
   }
 
 
   const handlePointerMove = (e) => {
     e.stopPropagation();
     e.preventDefault();
+
+    if(isRotating){
+      handlePointerUp(e);
+    }
     
   }
+
+  const handlekeyDown = (e) =>{
+    if(e.key === 'ArrowLeft'){
+      if(!isRotating) setIsRotating(true);
+      islandRef.current.ritation.y += 0.01 * Math.PI;
+    }
+    else if(e.key === 'ArrowRight'){
+      if(!isRotating) setIsRotating(true);
+      islandRef.current.ritation.y -= 0.01 * Math.PI;
+    }
+  }
+
+  const handlekeyUp = (e) =>{
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+      setIsRotating(false);
+    }
+  }
+
+
+  useEffect(() => {
+    if(!isRotating){
+      rotationSpeed.current *= dampingFactor;
+
+      if(Math.abs(rotationSpeed.current)< 0.001){
+        rotationSpeed.current = 0;
+      }
+    }
+  })
+
+  useEffect(() => {
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('pointerup', handlePointerUp);
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('keydown', handlekeyDown);
+    document.addEventListener('keyup', handlekeyUp);
+
+    return () => {
+
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('keydown', handlekeyDown);
+      document.removeEventListener('keyup', handlekeyUp);
+
+    }
+
+  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove]);
 
   return (
     <a.group ref={islandRef}{...props}>
