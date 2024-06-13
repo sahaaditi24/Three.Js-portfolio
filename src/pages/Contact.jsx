@@ -16,7 +16,10 @@ const Contact = () => {
     setisLoading(true);
   };
   const handleBlur = () => {};
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setisLoading(true);
+  }
 
   return (
     <section className='relative flex lg:flex-row flex-col max-container'>
