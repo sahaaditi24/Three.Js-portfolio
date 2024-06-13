@@ -1,13 +1,20 @@
 import React from 'react'
 import {useState} from 'react'
 import {useRef} from 'react'
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const formRef = useRef(null);
   const [form, setForm] = useState({name: '', email: '', message: ''})
   const [isLoading, setisLoading] = useState(false);
-  const handleChange = () => {};
-  const handleFocus = () => {};
+  const handleChange = (e) => {
+    setForm({...form, [e.target.name]: e.target.value})
+  };
+
+  const handleFocus = (e) => {
+    e.preventDefault();
+    setisLoading(true);
+  };
   const handleBlur = () => {};
   const handleSubmit = () => {};
 
