@@ -17,7 +17,7 @@ const renderContent = {
        <h1 className='sm:text-xl sm:leading-snug text-center neo-brutalism-blue py-4 px-8 text-white mx-5'>
        Hi, this is <span className='font-semibold'>Aditi</span>
        <br />
-       An innocent girl from no-where
+       A FrontEnd developer!!
        </h1>  
       ),
       2:(
