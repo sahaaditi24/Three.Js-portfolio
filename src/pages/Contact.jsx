@@ -6,24 +6,37 @@ import emailjs from '@emailjs/browser';
 const Contact = () => {
   const formRef = useRef(null);
   const [form, setForm] = useState({name: '', email: '', message: ''})
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value})
   };
 
   const handleFocus = (e) => {
     e.preventDefault();
-    setisLoading(true);
+    setIsLoading(true);
 
     emailjs.sendForm(
-
-    )
+        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: form.name,
+          to_name : 'Aditi',
+          from_email : 'contact@jsmastery.pro',
+          messgae: form.message
+        },
+        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+      ).then (() =>{
+          setIsLoading(false);
+      }).catch((error) => {
+          setIsLoading(false);
+          console.log(error);
+      })
 
   };
   const handleBlur = () => {};
   const handleSubmit = (e) => {
     e.preventDefault();
-    setisLoading(true);
+    setIsLoading(true);
   }
 
   return (
